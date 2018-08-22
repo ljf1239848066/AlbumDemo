@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/btn_back"
         android:layout_centerVertical="true"
+        android:spinnerMode="dropdown"
         android:textColor="@android:color/darker_gray" />
 
 </RelativeLayout>

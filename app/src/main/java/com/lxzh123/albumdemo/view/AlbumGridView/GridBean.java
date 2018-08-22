@@ -1,4 +1,4 @@
-package com.lxzh123.albumdemo.view;
+package com.lxzh123.albumdemo.view.AlbumGridView;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -12,12 +12,16 @@ public class GridBean<T extends Parcelable> implements Parcelable
 {
     private String thumbUrl;
     private String originUrl;
+    private long date;
+    private boolean isChecked;
     private T t;
 
-    public GridBean(String thumbUrl, String originUrl, T t)
+    public GridBean(String thumbUrl, String originUrl,long date, boolean isChecked, T t)
     {
         this.thumbUrl = thumbUrl;
         this.originUrl = originUrl;
+        this.date=date;
+        this.isChecked=isChecked;
         this.t = t;
     }
 
@@ -41,6 +45,22 @@ public class GridBean<T extends Parcelable> implements Parcelable
         this.originUrl = originUrl;
     }
 
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
     public T getT()
     {
         return t;
@@ -57,6 +77,8 @@ public class GridBean<T extends Parcelable> implements Parcelable
         return "GridBean{" +
                 "thumbUrl='" + thumbUrl + '\'' +
                 ", originUrl='" + originUrl + '\'' +
+                ", date='" + date + '\'' +
+                ", isChecked='" + isChecked + '\'' +
                 ", t=" + t +
                 '}';
     }
@@ -72,6 +94,8 @@ public class GridBean<T extends Parcelable> implements Parcelable
     {
         dest.writeString(this.thumbUrl);
         dest.writeString(this.originUrl);
+        dest.writeLong(this.date);
+        dest.writeByte((byte)(this.isChecked?1:0));
         dest.writeString(t.getClass().getName());//Write the class name of T class
         dest.writeParcelable(this.t, flags);
     }
@@ -80,6 +104,8 @@ public class GridBean<T extends Parcelable> implements Parcelable
     {
         this.thumbUrl = in.readString();
         this.originUrl = in.readString();
+        this.date=in.readLong();
+        this.isChecked=in.readByte()!=0;
         String tClassName = in.readString();//Read the class name of T class
         try
         {

@@ -1,4 +1,4 @@
-package com.lxzh123.albumdemo.view;
+package com.lxzh123.albumdemo.view.AlbumGridView;
 
 import android.content.Context;
 import android.os.Build;

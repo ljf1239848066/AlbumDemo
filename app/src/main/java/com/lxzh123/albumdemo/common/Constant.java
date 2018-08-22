@@ -10,4 +10,12 @@ public class Constant {
      * 相册图片显示列数
      */
     public final static int ALBUM_COLUMN_COUNT=3;
+
+    public final static int LOAD_ALBUM_GROUP_MSGWHAT=0;
+
+    public final static int LOAD_ALBUM_MSGWHAT=1;
+
+    public final static int STATUS_SUCCESS=1;
+
+    public final static int STATUS_FAIL=0;
 }

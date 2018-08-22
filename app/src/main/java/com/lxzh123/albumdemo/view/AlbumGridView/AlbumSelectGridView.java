@@ -1,4 +1,4 @@
-package com.lxzh123.albumdemo.view;
+package com.lxzh123.albumdemo.view.AlbumGridView;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -251,7 +251,7 @@ public class AlbumSelectGridView extends ViewGroup
                     initChildViews();
                     requestLayout();
                     if (mListener != null)
-                        mListener.onNineGirdItemDeleted(position, gridBean, imageContainer);
+                        mListener.onAlbumGirdItemDeleted(position, gridBean, imageContainer);
                 }
             });
             imageContainer.getImageView().setOnClickListener(new OnClickListener()
@@ -260,7 +260,7 @@ public class AlbumSelectGridView extends ViewGroup
                 public void onClick(View view)
                 {
                     if (mListener != null)
-                        mListener.onNineGirdItemClick(position, gridBean, imageContainer);
+                        mListener.onAlbumGirdItemClick(position, gridBean, imageContainer);
                 }
             });
             addView(imageContainer, position);
@@ -387,20 +387,13 @@ public class AlbumSelectGridView extends ViewGroup
     public interface onItemClickListener
     {
         /**
-         * Callback when clcik plus button be clicked
-         *
-         * @param cha the diff value between current data number displayed and maximum number
-         */
-        void onNineGirdAddMoreClick(int cha);
-
-        /**
          * Callback when image be clicked
          *
          * @param position       position,started with 0
          * @param gridBean       data of image be clicked
          * @param imageContainer image container of image be clicked
          */
-        void onNineGirdItemClick(int position, GridBean gridBean, AlbumSelectGirdContainer imageContainer);
+        void onAlbumGirdItemClick(int position, GridBean gridBean, AlbumSelectGirdContainer imageContainer);
 
         /**
          * Callback when one image be deleted
@@ -409,7 +402,7 @@ public class AlbumSelectGridView extends ViewGroup
          * @param gridBean       data of image be clicked
          * @param imageContainer image container of image be clicked
          */
-        void onNineGirdItemDeleted(int position, GridBean gridBean, AlbumSelectGirdContainer imageContainer);
+        void onAlbumGirdItemDeleted(int position, GridBean gridBean, AlbumSelectGirdContainer imageContainer);
     }
 
     /*****************************************************

@@ -5,6 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
+
+import com.lxzh123.albumdemo.R;
+import com.lxzh123.albumdemo.view.AlbumGridView.AlbumSelectGridView;
+import com.lxzh123.albumdemo.view.AlbumGridView.GridBean;
 
 import java.util.List;
 
@@ -43,14 +48,25 @@ public class AlbumSelectAdapter extends BaseAdapter {
         if(convertView==null){
 //            LayoutInflater inflater=(LayoutInflater.from(context));
             LayoutInflater inflater=(LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }else{
+            convertView=inflater.inflate(R.layout.layout_album_list_item,null);
 
+            viewHolder=new ViewHolder();
+            viewHolder.tvTimeInfo=(TextView)convertView.findViewById(R.id.tv_time_info);
+            viewHolder.tvSelect=(TextView)convertView.findViewById(R.id.tv_time_info);
+            viewHolder.gridView=(AlbumSelectGridView)convertView.findViewById(R.id.asg_images);
+
+            convertView.setTag(viewHolder);
+
+        }else{
+            viewHolder=(ViewHolder)convertView.getTag();
         }
 
         return convertView;
     }
 
     static class ViewHolder{
+        TextView tvTimeInfo;
+        TextView tvSelect;
         AlbumSelectGridView gridView;
     }
 }
