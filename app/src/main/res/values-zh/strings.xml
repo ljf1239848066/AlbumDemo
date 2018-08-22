@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AlbumDemo</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="album_name_all_dir">所有文件夹</string>
+</resources>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_title_bg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true">
+
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="@dimen/toolbar_btn_height"
+        android:layout_height="@dimen/toolbar_btn_height"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/toolbar_item_margin"
+        android:layout_marginRight="30dp"
+        android:background="@mipmap/btn_back" />
+
+    <Spinner
+        android:id="@+id/sp_album_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/btn_back"
+        android:layout_centerVertical="true"
+        android:textColor="@android:color/darker_gray" />
+
+</RelativeLayout>
