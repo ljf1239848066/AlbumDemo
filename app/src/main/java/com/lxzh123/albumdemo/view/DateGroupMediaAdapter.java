@@ -1,31 +1,52 @@
 package com.lxzh123.albumdemo.view;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.lxzh123.albumdemo.R;
+import com.lxzh123.albumdemo.model.MediaBean;
+import com.lxzh123.albumdemo.model.MediaDateGroupBean;
+import com.lxzh123.albumdemo.util.ImageLoader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * description $desc$
  * author      Created by lxzh
  * date        2018/8/23
  */
-public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<HeaderViewHolder,
-        MediaDateGroupViewHolder> {
+public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMediaAdapter.HeaderViewHolder,
+        DateGroupMediaAdapter.MediaDateGroupViewHolder> {
 
+    private final String TAG="DateGroupMediaAdapter";
     protected Context context = null;
+    private List<MediaDateGroupBean> mediaDateGroupBeanList;
 
     public DateGroupMediaAdapter(Context context) {
         this.context = context;
+        mediaDateGroupBeanList=new ArrayList<>();
+    }
+
+    public void setMediaDateGroupBeanList(List<MediaDateGroupBean> mediaDateGroupBeanList) {
+        this.mediaDateGroupBeanList = mediaDateGroupBeanList;
     }
 
     @Override
     protected int getItemCountForSection(int section) {
-        return section + 1;
+        Log.d(TAG,"getItemCountForSection:cnt="+mediaDateGroupBeanList.get(section).getMediaBeans().size());
+        return mediaDateGroupBeanList.get(section).getMediaBeans().size();
     }
 
     @Override
     protected int getSectionCount() {
-        return 5;
+        Log.d(TAG,"getSectionCount:cnt="+mediaDateGroupBeanList.size());
+        return mediaDateGroupBeanList.size();
     }
 
     protected LayoutInflater getLayoutInflater(){
@@ -34,26 +55,60 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<HeaderViewHo
 
     @Override
     protected HeaderViewHolder onCreateSectionHeaderViewHolder(ViewGroup parent, int viewType) {
-//        View view = getLayoutInflater().inflate(R.layout.view_count_header, parent, false);
-//        return new HeaderViewHolder(view);
-        return null;
+        View view = getLayoutInflater().inflate(R.layout.layout_album_date_head, parent, false);
+        return new HeaderViewHolder(view);
     }
 
     @Override
     protected MediaDateGroupViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
-//        View view = getLayoutInflater().inflate(R.layout.view_count_item, parent, false);
-//        return new MediaDateGroupViewHolder(view);
-        return null;
+        View view = getLayoutInflater().inflate(R.layout.layout_album_list_item, parent, false);
+        return new MediaDateGroupViewHolder(view);
     }
 
     @Override
     protected void onBindSectionHeaderViewHolder(HeaderViewHolder holder, int section) {
-        holder.render("Section " + (section + 1));
+        String txtTimeInfo=mediaDateGroupBeanList.get(section).getMediaBeans().get(0).getTimeStr();
+        holder.setTimeInfoText(txtTimeInfo);
+        holder.setSelectStatusText(context.getString(R.string.select_all));
     }
 
-    protected int[] colors = new int[]{0xfff44336, 0xff2196f3, 0xff009688, 0xff8bc34a, 0xffff9800};
     @Override
     protected void onBindItemViewHolder(MediaDateGroupViewHolder holder, int section, int position) {
-        holder.render(String.valueOf(position + 1), colors[section]);
+        MediaBean bean=mediaDateGroupBeanList.get(section).getMediaBeans().get(position);
+        holder.ivMedia.setMediaBean(bean);
+        holder.ivMedia.setImageLoader(new ImageLoader());
+        holder.ivMedia.loadImage(bean.getPath());
+        Log.d(TAG,"onBindItemViewHolder:s="+section+",p="+position+",path="+bean.getPath());
     }
+
+    class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        TextView tvTimeInfo;
+        TextView tvSelect;
+
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+            tvTimeInfo=(TextView)itemView.findViewById(R.id.tv_time_info);
+            tvSelect=(TextView)itemView.findViewById(R.id.tv_select_unselect_all);
+        }
+
+        public void setTimeInfoText(String text){
+            tvTimeInfo.setText(text);
+        }
+
+        public void setSelectStatusText(String text){
+            tvSelect.setText(text);
+        }
+    }
+
+    class MediaDateGroupViewHolder extends RecyclerView.ViewHolder {
+
+        CheckedImageView ivMedia;
+
+        public MediaDateGroupViewHolder(View itemView) {
+            super(itemView);
+            ivMedia=(CheckedImageView)itemView.findViewById(R.id.civ_media);
+        }
+    }
+
 }

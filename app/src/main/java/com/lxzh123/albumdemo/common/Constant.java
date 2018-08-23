@@ -1,5 +1,7 @@
 package com.lxzh123.albumdemo.common;
 
+import java.text.SimpleDateFormat;
+
 /**
  * description 静态常量数据
  * author      Created by lxzh
@@ -16,11 +18,26 @@ public class Constant {
     public final static int LOAD_ALBUM_MSGWHAT=1;
 
     /**
+     * 图片缩放系数
+     */
+    public final static float IMG_THUMBNAIL_SCALRE = 0.2f;
+    /**
+     * 分组列表缩略图显示尺寸
+     */
+    public final static int GROUP_THUMBNAIL_SIZE =20;
+
+    /**
      * 缩略图显示尺寸
      */
-    public final static int THUMBNAIL_SIZE=20;
+    public final static int IMG_THUMBNAIL_SIZE=300;
+
 
     public final static int STATUS_SUCCESS=1;
 
     public final static int STATUS_FAIL=0;
+
+    /**
+     * 时间格式化器
+     */
+    public final static SimpleDateFormat SIMPLE_DATE_FORMAT=new SimpleDateFormat("yyyy-MM-dd");
 }

@@ -2,4 +2,6 @@
     <string name="app_name">AlbumDemo</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="album_name_all_dir">All Directories</string>
+    <string name="select_all">Select All</string>
+    <string name="deselect_all">Deselect All</string>
 </resources>

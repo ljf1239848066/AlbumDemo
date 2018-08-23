@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.lxzh123.albumdemo.R;
-import com.lxzh123.albumdemo.view.AlbumGridView.AlbumSelectGridView;
 import com.lxzh123.albumdemo.view.AlbumGridView.GridBean;
 
 import java.util.List;
@@ -53,7 +52,7 @@ public class AlbumSelectAdapter extends BaseAdapter {
             viewHolder=new ViewHolder();
             viewHolder.tvTimeInfo=(TextView)convertView.findViewById(R.id.tv_time_info);
             viewHolder.tvSelect=(TextView)convertView.findViewById(R.id.tv_time_info);
-            viewHolder.gridView=(AlbumSelectGridView)convertView.findViewById(R.id.asg_images);
+//            viewHolder.gridView=(AlbumSelectGridView)convertView.findViewById(R.id.asg_images);
 
             convertView.setTag(viewHolder);
 
@@ -67,6 +66,6 @@ public class AlbumSelectAdapter extends BaseAdapter {
     static class ViewHolder{
         TextView tvTimeInfo;
         TextView tvSelect;
-        AlbumSelectGridView gridView;
+        CheckedImageView gridView;
     }
 }

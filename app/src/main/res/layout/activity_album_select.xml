@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
@@ -26,7 +27,7 @@
         android:id="@+id/rv_album_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rl_title_bg"
+        android:layout_below="@id/appbar_layout"
         android:layout_alignParentBottom="true"
         android:cacheColorHint="#00000000"
         android:drawSelectorOnTop="false"

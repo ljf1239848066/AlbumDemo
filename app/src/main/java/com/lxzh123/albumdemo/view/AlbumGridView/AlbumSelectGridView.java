@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lxzh123.albumdemo.R;
+import com.lxzh123.albumdemo.common.Constant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -273,10 +274,10 @@ public class AlbumSelectGridView extends ViewGroup
                     if (mImageLoader != null)
                     {
                         if (imageContainer.getImageWidth() != 0 && imageContainer.getImageWidth() != 0)
-                            mImageLoader.displayNineGridImage(getContext(), gridBean.getThumbUrl(), imageContainer.getImageView()
-                                    , imageContainer.getImageWidth(), imageContainer.getImageHeight());
+                            mImageLoader.displayGridImage(getContext(), gridBean.getThumbUrl(), imageContainer.getImageView()
+                                    , Constant.IMG_THUMBNAIL_SCALRE);
                         else
-                            mImageLoader.displayNineGridImage(getContext(), gridBean.getThumbUrl(), imageContainer.getImageView());
+                            mImageLoader.displayGridImage(getContext(), gridBean.getThumbUrl(), imageContainer.getImageView());
 
                     } else
                     {

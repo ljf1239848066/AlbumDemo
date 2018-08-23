@@ -29,13 +29,17 @@ import android.widget.TextView;
 import com.lxzh123.albumdemo.R;
 import com.lxzh123.albumdemo.common.Constant;
 import com.lxzh123.albumdemo.model.AlbumGroupBean;
+import com.lxzh123.albumdemo.model.MediaDateGroupBean;
 import com.lxzh123.albumdemo.util.AlbumUtil;
 import com.lxzh123.albumdemo.util.ImageSelectObservable;
+import com.lxzh123.albumdemo.util.MediaUtil;
 import com.lxzh123.albumdemo.util.ViewUtil;
 import com.lxzh123.albumdemo.view.DateGroupMediaAdapter;
+import com.lxzh123.albumdemo.view.GridDecoration;
 import com.lxzh123.albumdemo.view.GroupSpanSizeLookup;
 import com.lxzh123.albumdemo.view.SpinnerTextView;
 
+import java.io.File;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -52,6 +56,7 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
     private DateGroupMediaAdapter adapter;
     private Handler handler;
     private AlbumUtil albumUtil;
+    private MediaUtil mediaUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +78,8 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
         rvMedias=findViewById(R.id.rv_album_list);
         ImageSelectObservable.getInstance().addObserver(this);
         albumUtil=new AlbumUtil(this);
+        mediaUtil=new MediaUtil(this);
         adapter=new DateGroupMediaAdapter(this);
-        GridLayoutManager layoutManager=new GridLayoutManager(this,Constant.ALBUM_COLUMN_COUNT);
-        GroupSpanSizeLookup lookup = new GroupSpanSizeLookup(adapter, layoutManager);
-        layoutManager.setSpanSizeLookup(lookup);
-        rvMedias.setLayoutManager(layoutManager);
-        rvMedias.setHasFixedSize(false);
-        rvMedias.setItemAnimator(new DefaultItemAnimator());
     }
 
     private void Handle(){
@@ -100,13 +100,19 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
 
                         }
                         break;
+                    case Constant.LOAD_ALBUM_MSGWHAT:
+                        if(msg.arg1==Constant.STATUS_SUCCESS){
+                            LoadAlbumData();
+                        }else{
+
+                        }
+                        break;
                 }
                 super.handleMessage(msg);
             }
         };
         albumUtil.asyncLoadAlbumGroup(handler,Constant.LOAD_ALBUM_GROUP_MSGWHAT);
         Log.d(TAG,"Handle");
-        rvMedias.setAdapter(adapter);
     }
 
     private void LoadAlbumGroupData(){
@@ -114,6 +120,7 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
         List<AlbumGroupBean> albumGroupBeans= albumUtil.getAlbumGroup();
         tvGroupName.setClickable(true);
         tvGroupName.setText(albumGroupBeans.get(0).getBucketName());
+        tvGroupName.setTag(albumGroupBeans.get(0).getPath());
         tvGroupName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,6 +129,27 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
         });
         Log.d(TAG,"LoadAlbumGroupData2");
         initAlbumGroupDialog(albumGroupBeans);
+        File file=new File(tvGroupName.getTag().toString());
+        Log.d(TAG,"LoadAlbumGroupData:asyncLoadMedia:path="+file.getAbsolutePath());
+        Log.d(TAG,"LoadAlbumGroupData:asyncLoadMedia:path="+file.getParentFile().getAbsolutePath());
+        mediaUtil.asyncLoadMedia(handler,Constant.LOAD_ALBUM_MSGWHAT,file.getParentFile().getAbsolutePath());
+    }
+
+    private void LoadAlbumData(){
+        Log.d(TAG,"LoadAlbumData1");
+        List<MediaDateGroupBean> mediaDateGroupBeans=mediaUtil.getMediaDateGroupBeanList();
+        Log.d(TAG,"LoadAlbumData2:size="+mediaDateGroupBeans.size());
+        adapter.setMediaDateGroupBeanList(mediaDateGroupBeans);
+        GridLayoutManager layoutManager=new GridLayoutManager(this,Constant.ALBUM_COLUMN_COUNT);
+        GroupSpanSizeLookup lookup = new GroupSpanSizeLookup(adapter, layoutManager);
+        layoutManager.setSpanSizeLookup(lookup);
+        rvMedias.setLayoutManager(layoutManager);
+        rvMedias.setHasFixedSize(false);
+        rvMedias.setItemAnimator(new DefaultItemAnimator());
+        rvMedias.addItemDecoration(new GridDecoration(Constant.ALBUM_COLUMN_COUNT, 5, true));
+        rvMedias.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
+        Log.d(TAG,"LoadAlbumData3");
     }
 
     private void initAlbumGroupDialog(List<AlbumGroupBean> albumGroupBeans){
@@ -148,8 +176,6 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
         groupListDialog.show();
         tvGroupName.setDropdown(true);
     }
-
-
 
     @Override
     protected void onDestroy() {
@@ -190,7 +216,7 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
             ImageView ivGroupThumb=convertView.findViewById(R.id.iv_group_thumbnail);
             TextView tvGroupNameCnt=convertView.findViewById(R.id.tv_group_name_cnt);
             AlbumGroupBean bean=this.data.get(position);
-            ivGroupThumb.setImageBitmap(AlbumUtil.loadThumbnail(bean.getPath(),Constant.THUMBNAIL_SIZE));
+            ivGroupThumb.setImageBitmap(AlbumUtil.loadThumbnail(bean.getPath(),Constant.GROUP_THUMBNAIL_SIZE));
             tvGroupNameCnt.setText(String.format("%s(%d)",bean.getBucketName(),bean.getCount()));
             return convertView;
         }
@@ -198,6 +224,7 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
 
     private void onGroupItemSelected(AlbumGroupBean bean){
         tvGroupName.setText(bean.getBucketName());
+        tvGroupName.setTag(bean.getPath());
         tvGroupName.setDropdown(false);
     }
 

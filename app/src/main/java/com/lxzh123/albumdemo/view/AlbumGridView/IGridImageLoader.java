@@ -10,7 +10,7 @@ import android.widget.ImageView;
  */
 public interface IGridImageLoader
 {
-    void displayNineGridImage(Context context, String url, ImageView imageView);
+    void displayGridImage(Context context, String url, ImageView imageView);
 
-    void displayNineGridImage(Context context, String url, ImageView imageView, int width, int height);
+    void displayGridImage(Context context, String url, ImageView imageView, float scale);
 }

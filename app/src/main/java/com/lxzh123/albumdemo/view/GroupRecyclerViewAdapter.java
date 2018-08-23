@@ -20,7 +20,6 @@ public abstract class GroupRecyclerViewAdapter<H extends RecyclerView.ViewHolder
         VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     protected static final int TYPE_SECTION_HEADER = -1;
-    protected static final int TYPE_SECTION_FOOTER = -2;
     protected static final int TYPE_ITEM = -3;
 
     private int[] sectionForPosition = null;
@@ -114,7 +113,6 @@ public abstract class GroupRecyclerViewAdapter<H extends RecyclerView.ViewHolder
         }else{
             onBindItemViewHolder((VH) holder, section, index);
         }
-
     }
 
     @Override
@@ -155,10 +153,6 @@ public abstract class GroupRecyclerViewAdapter<H extends RecyclerView.ViewHolder
 
     protected boolean isSectionHeaderViewType(int viewType){
         return viewType == TYPE_SECTION_HEADER;
-    }
-
-    protected boolean isSectionFooterViewType(int viewType){
-        return viewType == TYPE_SECTION_FOOTER;
     }
 
     /**
