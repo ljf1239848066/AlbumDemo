@@ -15,6 +15,11 @@ public class Constant {
 
     public final static int LOAD_ALBUM_MSGWHAT=1;
 
+    /**
+     * 缩略图显示尺寸
+     */
+    public final static int THUMBNAIL_SIZE=20;
+
     public final static int STATUS_SUCCESS=1;
 
     public final static int STATUS_FAIL=0;

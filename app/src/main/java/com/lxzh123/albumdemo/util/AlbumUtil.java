@@ -3,6 +3,8 @@ package com.lxzh123.albumdemo.util;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -72,7 +74,7 @@ public class AlbumUtil {
                     MediaStore.Images.Media.DATA, MediaStore.Images.Media.BUCKET_ID,
                     MediaStore.Images.Media.BUCKET_DISPLAY_NAME, "COUNT(1) AS count"};
             String selection = "0==0) GROUP BY (" + MediaStore.Images.Media.BUCKET_ID;
-            String sortOrder = MediaStore.Images.Media.DATE_MODIFIED;
+            String sortOrder = "count DESC";
             Cursor cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, selection, null, sortOrder);
             Log.d(TAG,"LoadAlbumGroupThread:run:1");
             Message msg=Message.obtain();
@@ -111,6 +113,33 @@ public class AlbumUtil {
         }
     }
 
+    private static int calculateInSampleSize(BitmapFactory.Options options,
+                                            int reqWidth, int reqHeight) {
+        // 源图片的高度和宽度
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+        if (height > reqHeight || width > reqWidth) {
+            // 计算出实际宽高和目标宽高的比率
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            // 选择宽和高中最小的比率作为inSampleSize的值，这样可以保证最终图片的宽和高
+            // 一定都会大于等于目标的宽和高。
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+        return inSampleSize;
+    }
 
+    public static Bitmap loadThumbnail(String path,int size){
+        BitmapFactory.Options options=new BitmapFactory.Options();
+        options.inJustDecodeBounds=true;
 
+        //只读取尺寸信息
+        BitmapFactory.decodeFile(path,options);
+        //重新计算采样大小
+        options.inSampleSize=calculateInSampleSize(options,size,size);
+        options.inJustDecodeBounds=false;
+        //加载缩略图
+        return BitmapFactory.decodeFile(path,options);
+    }
 }

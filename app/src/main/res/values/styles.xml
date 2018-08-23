@@ -2,13 +2,12 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@android:color/white</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -17,12 +16,21 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="AppTheme.FullScreenTheme" parent="android:Theme.Holo.Light.NoActionBar.Fullscreen">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <declare-styleable name="AlbumSelectGridView">
         <attr name="sapce_size" format="dimension"/>
         <attr name="single_image_size" format="dimension"/>
         <attr name="single_image_ratio" format="float"/>
         <attr name="column_count" format="integer"/>
         <attr name="max_num" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="SpinnerTextView">
+        <attr name="IsDropDown" format="boolean"/>
     </declare-styleable>
 
 </resources>
