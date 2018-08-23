@@ -31,7 +31,6 @@ import com.lxzh123.albumdemo.common.Constant;
 import com.lxzh123.albumdemo.model.AlbumGroupBean;
 import com.lxzh123.albumdemo.model.MediaDateGroupBean;
 import com.lxzh123.albumdemo.util.AlbumUtil;
-import com.lxzh123.albumdemo.util.ImageSelectObservable;
 import com.lxzh123.albumdemo.util.MediaUtil;
 import com.lxzh123.albumdemo.util.ViewUtil;
 import com.lxzh123.albumdemo.view.DateGroupMediaAdapter;
@@ -76,7 +75,7 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
         btnBack=findViewById(R.id.btn_back);
         tvGroupName=findViewById(R.id.tv_album_group_name);
         rvMedias=findViewById(R.id.rv_album_list);
-        ImageSelectObservable.getInstance().addObserver(this);
+//        ImageSelectObservable.getInstance().addObserver(this);
         albumUtil=new AlbumUtil(this);
         mediaUtil=new MediaUtil(this);
         adapter=new DateGroupMediaAdapter(this);
@@ -130,7 +129,6 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
         Log.d(TAG,"LoadAlbumGroupData2");
         initAlbumGroupDialog(albumGroupBeans);
         File file=new File(tvGroupName.getTag().toString());
-        Log.d(TAG,"LoadAlbumGroupData:asyncLoadMedia:path="+file.getAbsolutePath());
         Log.d(TAG,"LoadAlbumGroupData:asyncLoadMedia:path="+file.getParentFile().getAbsolutePath());
         mediaUtil.asyncLoadMedia(handler,Constant.LOAD_ALBUM_MSGWHAT,file.getParentFile().getAbsolutePath());
     }
@@ -144,9 +142,9 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
         GroupSpanSizeLookup lookup = new GroupSpanSizeLookup(adapter, layoutManager);
         layoutManager.setSpanSizeLookup(lookup);
         rvMedias.setLayoutManager(layoutManager);
-        rvMedias.setHasFixedSize(false);
+        rvMedias.setHasFixedSize(true);
         rvMedias.setItemAnimator(new DefaultItemAnimator());
-        rvMedias.addItemDecoration(new GridDecoration(Constant.ALBUM_COLUMN_COUNT, 5, true));
+        rvMedias.addItemDecoration(new GridDecoration(Constant.ALBUM_COLUMN_COUNT, 6, true));
         rvMedias.setAdapter(adapter);
 //        adapter.notifyDataSetChanged();
         Log.d(TAG,"LoadAlbumData3");

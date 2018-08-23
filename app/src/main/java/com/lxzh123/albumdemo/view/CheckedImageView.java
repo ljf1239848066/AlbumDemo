@@ -29,6 +29,7 @@ public class CheckedImageView extends FrameLayout{
     private IGridImageLoader mImageLoader;
     private MediaBean mediaBean;
     private boolean mAttached;
+    private static int ViewWidth=-1;
 
     public ImageView getIvThumb() {
         return ivThumb;
@@ -59,11 +60,32 @@ public class CheckedImageView extends FrameLayout{
     private void initView(){
         ivThumb=findViewById(R.id.iv_thumb);
         cbChecked=findViewById(R.id.cb_checked);
+        cbChecked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setChecked(isChecked);
+            }
+        });
+    }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMeasuredDimension(getDefaultSize(0,widthMeasureSpec),getDefaultSize(0,heightMeasureSpec));
+        int childwid=getMeasuredWidth();
+        heightMeasureSpec=widthMeasureSpec=MeasureSpec.makeMeasureSpec(childwid,MeasureSpec.EXACTLY);
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
     }
 
     public void setChecked(boolean checked){
         cbChecked.setChecked(checked);
+        ivThumb.setAlpha(checked?150:255);
+        mediaBean.setChecked(checked);
     }
 
     @Override

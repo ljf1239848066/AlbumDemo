@@ -29,7 +29,7 @@ public class Constant {
     /**
      * 缩略图显示尺寸
      */
-    public final static int IMG_THUMBNAIL_SIZE=300;
+    public final static int IMG_THUMBNAIL_SIZE=100;
 
 
     public final static int STATUS_SUCCESS=1;

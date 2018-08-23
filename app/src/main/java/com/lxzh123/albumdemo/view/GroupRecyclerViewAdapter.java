@@ -6,8 +6,11 @@ package com.lxzh123.albumdemo.view;
  * date        2018/8/23
  */
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
+
+import java.util.List;
 
 /**
  * An extension to RecyclerView.Adapter to provide sections with headers and footers to a
@@ -116,6 +119,20 @@ public abstract class GroupRecyclerViewAdapter<H extends RecyclerView.ViewHolder
     }
 
     @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, @NonNull List<Object> payloads) {
+        int section = sectionForPosition[position];
+        int index = positionWithinSection[position];
+
+        if(payloads.isEmpty()){
+            onBindViewHolder(holder,position);
+        }else{
+            if(!isSectionHeaderPosition(position)){
+                onBindItemViewHolderEx((VH) holder, section, index);
+            }
+        }
+    }
+
+    @Override
     public int getItemViewType(int position) {
 
         if(sectionForPosition == null){
@@ -184,6 +201,10 @@ public abstract class GroupRecyclerViewAdapter<H extends RecyclerView.ViewHolder
      * Binds data to the item view for a given position within a section
      */
     protected abstract void onBindItemViewHolder(VH holder, int section, int position);
+    /**
+     * Binds data to the item view for a given position within a section
+     */
+    protected abstract void onBindItemViewHolderEx(VH holder, int section, int position);
 
     class SectionDataObserver extends RecyclerView.AdapterDataObserver{
         @Override

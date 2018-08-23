@@ -1,20 +1,21 @@
 package com.lxzh123.albumdemo.model;
 
-import com.lxzh123.albumdemo.common.Constant;
+import android.support.annotation.NonNull;
 
-import java.util.Date;
+import com.lxzh123.albumdemo.common.Constant;
 
 /**
  * description $desc$
  * author      Created by lxzh
  * date        2018/8/23
  */
-public class MediaBean {
+public class MediaBean implements Comparable{
     private int id;
     private String thumbPath;
     private String path;
     private long time;
     private String timeStr;
+    private MediaType mediaType;
     private boolean isChecked;
 
     public int getId() {
@@ -47,11 +48,21 @@ public class MediaBean {
 
     public void setTime(long time) {
         this.time = time;
-        this.timeStr= Constant.SIMPLE_DATE_FORMAT.format(new Date(this.time*1000l));
+//        Date date=new Date();
+//        date.setTime(this.time);
+        this.timeStr= Constant.SIMPLE_DATE_FORMAT.format(this.time);
     }
 
     public String getTimeStr() {
         return timeStr;
+    }
+
+    public MediaType getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(MediaType mediaType) {
+        this.mediaType = mediaType;
     }
 
     public boolean isChecked() {
@@ -73,5 +84,17 @@ public class MediaBean {
     @Override
     public String toString() {
         return String.format("MeadiaBean:id=%d,path=%s,date=%s,isChecked=%d",id,path,timeStr,isChecked?1:0);
+    }
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+        long oTime=((MediaBean)o).time;
+        if(oTime<time){
+            return -1;
+        }else if(oTime==time){
+            return 0;
+        }else{
+            return 1;
+        }
     }
 }
