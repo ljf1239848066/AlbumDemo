@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialog;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,11 +32,10 @@ import com.lxzh123.albumdemo.model.AlbumGroupBean;
 import com.lxzh123.albumdemo.util.AlbumUtil;
 import com.lxzh123.albumdemo.util.ImageSelectObservable;
 import com.lxzh123.albumdemo.util.ViewUtil;
-import com.lxzh123.albumdemo.view.AlbumGridView.GridBean;
-import com.lxzh123.albumdemo.view.AlbumSelectAdapter;
+import com.lxzh123.albumdemo.view.DateGroupMediaAdapter;
+import com.lxzh123.albumdemo.view.GroupSpanSizeLookup;
 import com.lxzh123.albumdemo.view.SpinnerTextView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -49,7 +49,7 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
     private AlbumGroupListDialog groupListDialog;
     private RecyclerView rvMedias;
 
-    private AlbumSelectAdapter adapter;
+    private DateGroupMediaAdapter adapter;
     private Handler handler;
     private AlbumUtil albumUtil;
 
@@ -73,9 +73,13 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
         rvMedias=findViewById(R.id.rv_album_list);
         ImageSelectObservable.getInstance().addObserver(this);
         albumUtil=new AlbumUtil(this);
-        adapter=new AlbumSelectAdapter(this, new ArrayList<GridBean>());
+        adapter=new DateGroupMediaAdapter(this);
         GridLayoutManager layoutManager=new GridLayoutManager(this,Constant.ALBUM_COLUMN_COUNT);
-        
+        GroupSpanSizeLookup lookup = new GroupSpanSizeLookup(adapter, layoutManager);
+        layoutManager.setSpanSizeLookup(lookup);
+        rvMedias.setLayoutManager(layoutManager);
+        rvMedias.setHasFixedSize(false);
+        rvMedias.setItemAnimator(new DefaultItemAnimator());
     }
 
     private void Handle(){
@@ -103,7 +107,6 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
         albumUtil.asyncLoadAlbumGroup(handler,Constant.LOAD_ALBUM_GROUP_MSGWHAT);
         Log.d(TAG,"Handle");
         rvMedias.setAdapter(adapter);
-        rvMedias.setDividerHeight(1);
     }
 
     private void LoadAlbumGroupData(){
@@ -200,7 +203,6 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
 
     class AlbumGroupListDialog extends AppCompatDialog {
 
-        private Context mContext;
         private ListView lvAlbumGroup;
         private List<AlbumGroupBean> groupBeanList;
         private SimpleGroupAdapter groupAdapter;
@@ -208,7 +210,6 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer{
 
         public AlbumGroupListDialog(Context context, int theme, List<AlbumGroupBean> list) {
             super(context, theme);
-            mContext = context;
             groupBeanList=list;
             setContentView(theme);
             lvAlbumGroup=findViewById(R.id.lv_album_group_list);
