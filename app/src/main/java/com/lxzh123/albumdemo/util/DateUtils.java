@@ -5,7 +5,7 @@ import com.lxzh123.albumdemo.common.Constant;
 import java.util.Date;
 
 /**
- * description $desc$
+ * description 日期工具
  * author      Created by lxzh
  * date        2018/8/24
  */

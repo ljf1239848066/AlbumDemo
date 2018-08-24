@@ -105,7 +105,7 @@ public class AlbumDao {
 
             Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
 
-            List<AlbumGroupBean> mediaBeanList = getContentProvider(uri, columns, selection, sortOrder, MediaType.VEDIO);
+            List<AlbumGroupBean> mediaBeanList = getContentProvider(uri, columns, selection, sortOrder, MediaType.VIDEO);
 
             return mediaBeanList;
         }

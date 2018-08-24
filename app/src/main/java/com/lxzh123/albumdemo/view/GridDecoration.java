@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
- * description $desc$
+ * description 表格装饰器
  * author      Created by lxzh
  * date        2018/8/23
  */

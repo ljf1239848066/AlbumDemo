@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Date;
 
 /**
- * description $desc$
+ * description 文件工具类
  * author      Created by lxzh
  * date        2018/8/24
  */

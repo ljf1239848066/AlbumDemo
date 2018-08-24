@@ -1,24 +1,16 @@
 package com.lxzh123.albumdemo.view;
 
 /**
- * description
+ * description 分组ReclyclerView适配器
  * author      Created by lxzh
  * date        2018/8/23
  */
-
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import java.util.List;
 
-/**
- * An extension to RecyclerView.Adapter to provide sections with headers and footers to a
- * RecyclerView. Each section can have an arbitrary number of items.
- *
- * @param <H> Class extending RecyclerView.ViewHolder to hold and bind the header view
- * @param <VH> Class extending RecyclerView.ViewHolder to hold and bind the items view
- */
 public abstract class GroupRecyclerViewAdapter<H extends RecyclerView.ViewHolder,
         VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -41,10 +33,6 @@ public abstract class GroupRecyclerViewAdapter<H extends RecyclerView.ViewHolder
         setupIndices();
     }
 
-    /**
-     * Returns the sum of number of items for each section plus headers and footers if they
-     * are provided.
-     */
     @Override
     public int getItemCount() {
         return count;
@@ -158,9 +146,6 @@ public abstract class GroupRecyclerViewAdapter<H extends RecyclerView.ViewHolder
         return TYPE_ITEM;
     }
 
-    /**
-     * Returns true if the argument position corresponds to a header
-     */
     public boolean isSectionHeaderPosition(int position){
         if(isHeader == null){
             setupIndices();
@@ -172,38 +157,18 @@ public abstract class GroupRecyclerViewAdapter<H extends RecyclerView.ViewHolder
         return viewType == TYPE_SECTION_HEADER;
     }
 
-    /**
-     * Returns the number of sections in the RecyclerView
-     */
     protected abstract int getSectionCount();
 
-    /**
-     * Returns the number of items for a given section
-     */
     protected abstract int getItemCountForSection(int section);
 
-    /**
-     * Creates a ViewHolder of class H for a Header
-     */
     protected abstract H  onCreateSectionHeaderViewHolder(ViewGroup parent, int viewType);
 
-    /**
-     * Creates a ViewHolder of class VH for an Item
-     */
     protected abstract VH onCreateItemViewHolder(ViewGroup parent, int viewType);
 
-    /**
-     * Binds data to the header view of a given section
-     */
     protected abstract void onBindSectionHeaderViewHolder(H holder, int section);
 
-    /**
-     * Binds data to the item view for a given position within a section
-     */
     protected abstract void onBindItemViewHolder(VH holder, int section, int position);
-    /**
-     * Binds data to the item view for a given position within a section
-     */
+
     protected abstract void onBindItemViewHolderEx(VH holder, int section, int position);
 
     class SectionDataObserver extends RecyclerView.AdapterDataObserver{

@@ -117,7 +117,7 @@ public class MediaDao {
 
             Uri uri=MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
 
-            List<MediaBean> mediaBeanList=getContentProvider(uri,columns,where,sortOrder,MediaType.VEDIO);
+            List<MediaBean> mediaBeanList=getContentProvider(uri,columns,where,sortOrder,MediaType.VIDEO);
 
             if(mediaBeanList!=null&&mediaBeanList.size()>0){
                 mediaBeanAll.addAll(mediaBeanList);

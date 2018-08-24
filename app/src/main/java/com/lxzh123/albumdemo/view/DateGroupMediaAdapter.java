@@ -80,9 +80,6 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMed
     protected void onBindItemViewHolder(MediaDateGroupViewHolder holder, int section, int position) {
         MediaBean bean=mediaDateGroupBeanList.get(section).getMediaBeans().get(position);
         bindItem(holder,section,position,bean);
-//        holder.ivMedia.setImageLoader(new ImageLoader());
-//        holder.ivMedia.setImageLoader(new GlideImageLoader());
-//        holder.ivMedia.loadImage(bean.getPath());
         Glide.with(context).load(bean.getPath()).centerCrop().into(holder.ivMedia.getImageView());
     }
 
@@ -95,7 +92,7 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMed
     private void bindItem(MediaDateGroupViewHolder holder, int section, int position, final MediaBean bean){
         holder.ivMedia.setMediaBean(bean);
         holder.ivMedia.setChecked(bean.isChecked());
-        if(bean.getMediaType()== MediaType.VEDIO){
+        if(bean.getMediaType()== MediaType.VIDEO){
             holder.ivMedia.setTime(bean.getDurationStr());
         }else{
             holder.ivMedia.hideVideoTime();

@@ -1,7 +1,6 @@
 package com.lxzh123.albumdemo.view;
 
 import android.content.Context;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -15,9 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lxzh123.albumdemo.R;
-import com.lxzh123.albumdemo.common.Constant;
 import com.lxzh123.albumdemo.model.MediaBean;
-import com.lxzh123.albumdemo.view.AlbumGridView.IGridImageLoader;
 
 /**
  * description 支持选中状态变化的媒体文件展示视图
@@ -30,8 +27,6 @@ public class CheckableMediaView extends FrameLayout{
     private CheckBox cbChecked;
     private ImageView ivFlag;
     private TextView tvTime;
-    //interface of imageloader
-    private IGridImageLoader mImageLoader;
     private MediaBean mediaBean;
     private boolean mAttached;
     private OnCheckedChangedListener mOnCheckedChangedListener;
@@ -40,20 +35,8 @@ public class CheckableMediaView extends FrameLayout{
         return ivThumb;
     }
 
-    public CheckBox getCheckBox() {
-        return cbChecked;
-    }
-
     public void setMediaBean(MediaBean mediaBean) {
         this.mediaBean = mediaBean;
-    }
-
-    public IGridImageLoader getImageLoader() {
-        return mImageLoader;
-    }
-
-    public void setImageLoader(IGridImageLoader mageLoader) {
-        this.mImageLoader = mageLoader;
     }
 
     public CheckableMediaView(@NonNull Context context) {
@@ -148,41 +131,6 @@ public class CheckableMediaView extends FrameLayout{
     }
 
     interface OnCheckedChangedListener{
-        public void OnCheckedChanged(View view);
-    }
-
-    public void loadImage(String path){
-        AttachImageRunnable runnable=new AttachImageRunnable(
-                this,mediaBean,getContext());
-        if(this.getAttached()){
-            this.post(runnable);
-        }else{
-            Handler handler=new Handler();
-            handler.post(runnable);
-        }
-    }
-
-    private class AttachImageRunnable implements Runnable{
-
-        private CheckableMediaView imageContainer;
-        private MediaBean mediaBean;
-        private Context context;
-
-        public AttachImageRunnable(CheckableMediaView imageContainer, MediaBean mediaBean, Context context) {
-            this.imageContainer = imageContainer;
-            this.mediaBean = mediaBean;
-            this.context = context;
-        }
-
-        @Override
-        public void run() {
-            if (mImageLoader != null) {
-                mImageLoader.displayGridImage(getContext(), mediaBean.getThumbPath(),
-                        imageContainer.getImageView(), Constant.IMG_THUMBNAIL_SCALRE);
-
-            } else {
-                Log.w("NineGridView", "Can not display the image of NineGridView, you'd better set a imageloader!!!!");
-            }
-        }
+        void OnCheckedChanged(View view);
     }
 }

@@ -7,6 +7,6 @@ package com.lxzh123.albumdemo.model;
  */
 public enum MediaType {
     IMAGE,
-    VEDIO,
+    VIDEO,
     AUDIO
 }

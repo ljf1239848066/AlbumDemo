@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.View;
 
 /**
- * description $desc$
+ * description RecyclerView
  * author      Created by lxzh
  * date        2018/8/24
  */
