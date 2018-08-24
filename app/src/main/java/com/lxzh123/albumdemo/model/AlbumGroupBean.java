@@ -1,5 +1,7 @@
 package com.lxzh123.albumdemo.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 /**
@@ -7,7 +9,7 @@ import android.support.annotation.NonNull;
  * author      Created by lxzh
  * date        2018/8/22}
  */
-public class AlbumGroupBean implements Comparable{
+public class AlbumGroupBean<T extends Parcelable> implements Comparable,Parcelable {
     private int id;
     private String path;
     private int bucketId;
@@ -79,6 +81,49 @@ public class AlbumGroupBean implements Comparable{
     public AlbumGroupBean() {
         this.tag = 0;
     }
+
+    public AlbumGroupBean(Parcel in){
+        this.id=in.readInt();
+        this.path=in.readString();
+        this.bucketId=in.readInt();
+        this.bucketName=in.readString();
+        this.thumbType=MediaType.values()[in.readInt()];
+        this.time=in.readLong();
+        this.count=in.readInt();
+        this.tag=in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(id);
+        out.writeString(path);
+        out.writeInt(bucketId);
+        out.writeString(bucketName);
+        out.writeInt(thumbType.ordinal());
+        out.writeLong(time);
+        out.writeInt(count);
+        out.writeInt(tag);
+    }
+
+    public static final Parcelable.Creator<AlbumGroupBean> CREATOR = new Parcelable.Creator<AlbumGroupBean>()
+    {
+        @Override
+        public AlbumGroupBean createFromParcel(Parcel source)
+        {
+            return new AlbumGroupBean(source);
+        }
+
+        @Override
+        public AlbumGroupBean[] newArray(int size)
+        {
+            return new AlbumGroupBean[size];
+        }
+    };
 
     @Override
     public String toString() {

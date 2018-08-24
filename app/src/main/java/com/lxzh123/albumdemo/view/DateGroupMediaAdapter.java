@@ -29,7 +29,6 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMed
     private final String TAG="DateGroupMediaAdapter";
     protected Context context = null;
     private List<MediaDateGroupBean> mediaDateGroupBeanList;
-    private OnMediaCheckedChangedListener onMediaCheckedChangedListener;
     private CheckableRecyclerView recyclerView;
 
     public DateGroupMediaAdapter(Context context,CheckableRecyclerView recyclerView) {
@@ -96,8 +95,6 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMed
     private void bindItem(MediaDateGroupViewHolder holder, int section, int position, final MediaBean bean){
         holder.ivMedia.setMediaBean(bean);
         holder.ivMedia.setChecked(bean.isChecked());
-//        holder.section=section;
-//        holder.position=position;
         if(bean.getMediaType()== MediaType.VEDIO){
             holder.ivMedia.setTime(bean.getDurationStr());
         }else{
@@ -114,11 +111,6 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMed
 
     @Override
     public void onSelectAllCheckedChanged(View view, int section, boolean isSelectAll) {
-//        RecyclerView recyclerView=(RecyclerView)view.getParent();
-//        GridLayoutManager gridLayoutManager=(GridLayoutManager) recyclerView.getLayoutManager();
-//        int firstItem=gridLayoutManager.findFirstCompletelyVisibleItemPosition();
-//        int lastItem=gridLayoutManager.findLastCompletelyVisibleItemPosition();
-
         List<MediaBean> mediaBeans=mediaDateGroupBeanList.get(section).getMediaBeans();
         int cnt=mediaBeans.size();
         int startIdx=0;
@@ -134,13 +126,10 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMed
 //            notifyItemChanged(curIdx,1);//局部刷新，调用重载的方法 不刷新ImageView
         }
         //随便传一个"1"作为payload进行局部刷新，调用重载的方法 不刷新ImageView
-        Log.d(TAG,"onSelectAllCheckedChanged:1");
         recyclerView.BlockCheckChangedEvent();
         notifyItemRangeChanged(curIdx,curIdx+cnt-1,1);
         recyclerView.CancelBlockCheckChangedEvent();
-        Log.d(TAG,"onSelectAllCheckedChanged:2");
         recyclerView.OnMediaCheckedChangeListener(view);
-        Log.d(TAG,"onSelectAllCheckedChanged:3");
     }
 
     public List<MediaBean> getCheckedItem(){
@@ -195,10 +184,6 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMed
     class MediaDateGroupViewHolder extends RecyclerView.ViewHolder {
 
         CheckableMediaView ivMedia;
-        MediaBean bean;
-//        int section;
-//        int position;
-
         public MediaDateGroupViewHolder(final View itemView) {
             super(itemView);
             ivMedia=itemView.findViewById(R.id.cmv_media);

@@ -10,4 +10,5 @@
     <string name="visiable_family_enable">Family</string>
     <string name="visiable_me_enable">Me</string>
     <string name="visiable_parents_enable">Parents</string>
+    <string name="title_activity_upload_media">UploadMediaActivity</string>
 </resources>

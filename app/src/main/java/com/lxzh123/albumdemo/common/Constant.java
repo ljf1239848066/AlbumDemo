@@ -36,6 +36,8 @@ public class Constant {
 
     public final static int STATUS_FAIL=0;
 
+    public final static String START_UPLOAD_DATA_TAG="START_UPLOAD_DATA_TAG";
+
     /**
      * 时间格式化器
      */

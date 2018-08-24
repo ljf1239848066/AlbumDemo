@@ -1,6 +1,7 @@
 package com.lxzh123.albumdemo.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -47,10 +48,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 
-public class AlbumSelectActivity extends AppCompatActivity implements Observer,OnMediaCheckedChangedListener {
+public class AlbumSelectActivity extends AppCompatActivity implements OnMediaCheckedChangedListener {
     private final static String TAG="AlbumSelectActivity";
 
     private Toolbar toolbar;
@@ -89,7 +88,6 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer,O
         spWhoCanSee=findViewById(R.id.sp_who_can_see);
         btnUpload=findViewById(R.id.btn_upload);
 
-//        ImageSelectObservable.getInstance().addObserver(this);
         albumDao =new AlbumDao(this);
         mediaDao =new MediaDao(this);
         adapter=new DateGroupMediaAdapter(this,rvMedias);
@@ -136,7 +134,12 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer,O
             }
         };
         albumDao.asyncLoadAlbumGroup(handler,Constant.LOAD_ALBUM_GROUP_MSGWHAT);
-        Log.d(TAG,"Handle");
+        btnUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startUpload();
+            }
+        });
     }
 
     private void LoadAlbumGroupData(){
@@ -154,13 +157,11 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer,O
     }
 
     private void LoadAlbumData(){
-        Log.d(TAG,"LoadAlbumData1");
         List<MediaDateGroupBean> mediaDateGroupBeans= mediaDao.getMediaDateGroupBeanList();
         Log.d(TAG,"LoadAlbumData2:size="+mediaDateGroupBeans.size());
         adapter.setMediaDateGroupBeanList(mediaDateGroupBeans);
 
         adapter.notifyDataSetChanged();
-        Log.d(TAG,"LoadAlbumData3");
     }
 
     private void initAlbumGroupDialog(List<AlbumGroupBean> albumGroupBeans){
@@ -218,7 +219,6 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer,O
         }
         VisiableAdapter visiableAdapter = new VisiableAdapter(data);
         spWhoCanSee.setAdapter(visiableAdapter);
-//        spWhoCanSee.setPromptId(0);
     }
 
     @Override
@@ -237,6 +237,15 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer,O
         }
     }
 
+    public void startUpload(){
+        Intent intent=new Intent(this,UploadMediaActivity.class);
+        Bundle bundle=new Bundle();
+        ArrayList<MediaBean> checkedItems=(ArrayList<MediaBean>)adapter.getCheckedItem();
+        bundle.putParcelableArrayList(Constant.START_UPLOAD_DATA_TAG,checkedItems);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -249,11 +258,6 @@ public class AlbumSelectActivity extends AppCompatActivity implements Observer,O
         if(groupListDialog.isShowing()){
             groupListDialog.dismiss();
         }
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-
     }
 
     class SimpleGroupAdapter extends BaseAdapter{
