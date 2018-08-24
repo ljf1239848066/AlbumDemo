@@ -4,4 +4,10 @@
     <string name="album_name_all_dir">All Directories</string>
     <string name="select_all">Select All</string>
     <string name="deselect_all">Deselect All</string>
+    <string name="upload">Upload</string>
+    <string name="title_who_can_see">Who can see?</string>
+    <string name="visiable_all_enable">Family &#038; Fans</string>
+    <string name="visiable_family_enable">Family</string>
+    <string name="visiable_me_enable">Me</string>
+    <string name="visiable_parents_enable">Parents</string>
 </resources>

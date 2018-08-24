@@ -3,8 +3,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <com.lxzh123.albumdemo.view.CheckedImageView
-        android:id="@+id/civ_media"
+    <com.lxzh123.albumdemo.view.CheckableMediaView
+        android:id="@+id/cmv_media"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

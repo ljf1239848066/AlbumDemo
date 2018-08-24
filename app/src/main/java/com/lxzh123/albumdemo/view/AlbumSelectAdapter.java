@@ -47,7 +47,7 @@ public class AlbumSelectAdapter extends BaseAdapter {
         if(convertView==null){
 //            LayoutInflater inflater=(LayoutInflater.from(context));
             LayoutInflater inflater=(LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView=inflater.inflate(R.layout.layout_media_list_item,null);
+            convertView=inflater.inflate(R.layout.layout_media_media_item,null);
 
             viewHolder=new ViewHolder();
             viewHolder.tvTimeInfo=(TextView)convertView.findViewById(R.id.tv_time_info);
@@ -66,6 +66,6 @@ public class AlbumSelectAdapter extends BaseAdapter {
     static class ViewHolder{
         TextView tvTimeInfo;
         TextView tvSelect;
-        CheckedImageView gridView;
+        CheckableMediaView gridView;
     }
 }

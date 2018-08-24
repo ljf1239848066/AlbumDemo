@@ -10,8 +10,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lxzh123.albumdemo.R;
+import com.lxzh123.albumdemo.dao.MediaDao;
 import com.lxzh123.albumdemo.model.MediaBean;
 import com.lxzh123.albumdemo.model.MediaDateGroupBean;
+import com.lxzh123.albumdemo.model.MediaType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +24,17 @@ import java.util.List;
  * date        2018/8/23
  */
 public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMediaAdapter.HeaderViewHolder,
-        DateGroupMediaAdapter.MediaDateGroupViewHolder> implements OnSelectDeselectAlClickedListener {
+        DateGroupMediaAdapter.MediaDateGroupViewHolder> implements OnSelectDeselectAllClickedListener {
 
     private final String TAG="DateGroupMediaAdapter";
     protected Context context = null;
     private List<MediaDateGroupBean> mediaDateGroupBeanList;
+    private OnMediaCheckedChangedListener onMediaCheckedChangedListener;
+    private CheckableRecyclerView recyclerView;
 
-    public DateGroupMediaAdapter(Context context) {
+    public DateGroupMediaAdapter(Context context,CheckableRecyclerView recyclerView) {
         this.context = context;
+        this.recyclerView=recyclerView;
         mediaDateGroupBeanList=new ArrayList<>();
     }
 
@@ -39,13 +44,11 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMed
 
     @Override
     protected int getItemCountForSection(int section) {
-//        Log.d(TAG,"getItemCountForSection:cnt="+mediaDateGroupBeanList.get(section).getMediaBeans().size());
         return mediaDateGroupBeanList.get(section).getMediaBeans().size();
     }
 
     @Override
     protected int getSectionCount() {
-//        Log.d(TAG,"getSectionCount:cnt="+mediaDateGroupBeanList.size());
         return mediaDateGroupBeanList.size();
     }
 
@@ -55,13 +58,13 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMed
 
     @Override
     protected HeaderViewHolder onCreateSectionHeaderViewHolder(ViewGroup parent, int viewType) {
-        View view = getLayoutInflater().inflate(R.layout.layout_album_date_head, parent, false);
+        View view = getLayoutInflater().inflate(R.layout.layout_media_date_head, parent, false);
         return new HeaderViewHolder(view);
     }
 
     @Override
     protected MediaDateGroupViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
-        View view = getLayoutInflater().inflate(R.layout.layout_media_list_item, parent, false);
+        View view = getLayoutInflater().inflate(R.layout.layout_media_media_item, parent, false);
         return new MediaDateGroupViewHolder(view);
     }
 
@@ -77,23 +80,36 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMed
     @Override
     protected void onBindItemViewHolder(MediaDateGroupViewHolder holder, int section, int position) {
         MediaBean bean=mediaDateGroupBeanList.get(section).getMediaBeans().get(position);
-        holder.ivMedia.setMediaBean(bean);
-        holder.ivMedia.setChecked(bean.isChecked());
-        holder.section=section;
-        holder.position=position;
+        bindItem(holder,section,position,bean);
 //        holder.ivMedia.setImageLoader(new ImageLoader());
 //        holder.ivMedia.setImageLoader(new GlideImageLoader());
 //        holder.ivMedia.loadImage(bean.getPath());
-        Glide.with(context).load(bean.getPath()).centerCrop().into(holder.ivMedia.getIvThumb());
+        Glide.with(context).load(bean.getPath()).centerCrop().into(holder.ivMedia.getImageView());
     }
 
     @Override
     public void onBindItemViewHolderEx(MediaDateGroupViewHolder holder,int section, int position) {
         MediaBean bean=mediaDateGroupBeanList.get(section).getMediaBeans().get(position);
+        bindItem(holder,section,position,bean);
+    }
+
+    private void bindItem(MediaDateGroupViewHolder holder, int section, int position, final MediaBean bean){
         holder.ivMedia.setMediaBean(bean);
         holder.ivMedia.setChecked(bean.isChecked());
-        holder.section=section;
-        holder.position=position;
+//        holder.section=section;
+//        holder.position=position;
+        if(bean.getMediaType()== MediaType.VEDIO){
+            holder.ivMedia.setTime(bean.getDurationStr());
+        }else{
+            holder.ivMedia.hideVideoTime();
+        }
+        holder.ivMedia.setOnCheckedChangedListener(new CheckableMediaView.OnCheckedChangedListener() {
+            @Override
+            public void OnCheckedChanged(View view) {
+                Log.d(TAG,"bindItem:OnCheckedChanged:");
+                recyclerView.OnMediaCheckedChangeListener(null);
+            }
+        });
     }
 
     @Override
@@ -118,7 +134,21 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMed
 //            notifyItemChanged(curIdx,1);//局部刷新，调用重载的方法 不刷新ImageView
         }
         //随便传一个"1"作为payload进行局部刷新，调用重载的方法 不刷新ImageView
+        Log.d(TAG,"onSelectAllCheckedChanged:1");
+        recyclerView.BlockCheckChangedEvent();
         notifyItemRangeChanged(curIdx,curIdx+cnt-1,1);
+        recyclerView.CancelBlockCheckChangedEvent();
+        Log.d(TAG,"onSelectAllCheckedChanged:2");
+        recyclerView.OnMediaCheckedChangeListener(view);
+        Log.d(TAG,"onSelectAllCheckedChanged:3");
+    }
+
+    public List<MediaBean> getCheckedItem(){
+        return MediaDao.getCheckedItem(mediaDateGroupBeanList);
+    }
+
+    public boolean hasCheckedItem(){
+        return MediaDao.hasCheckedItem(mediaDateGroupBeanList);
     }
 
     class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -126,7 +156,7 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMed
         TextView tvTimeInfo;
         SelectDeselectTextView tvSelect;
         int section;
-        OnSelectDeselectAlClickedListener mOnSelectDeselectAlClickedListener;
+        OnSelectDeselectAllClickedListener mOnSelectDeselectAllClickedListener;
 
         public HeaderViewHolder(final View itemView) {
             super(itemView);
@@ -137,20 +167,10 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMed
                 @Override
                 public void onClick(View v) {
                     Log.d(TAG,"HeaderViewHolder:onClick1");
-                    if(mOnSelectDeselectAlClickedListener!=null){
+                    if(mOnSelectDeselectAllClickedListener !=null){
                         Log.d(TAG,"HeaderViewHolder:onClick2");
-                        mOnSelectDeselectAlClickedListener.onSelectAllCheckedChanged(itemView,section,tvSelect.isSelectAll());
+                        mOnSelectDeselectAllClickedListener.onSelectAllCheckedChanged(itemView,section,tvSelect.isSelectAll());
                     }
-//
-//                    boolean isSelectAll=tvSelect.isSelectAll();
-//                    List<MediaBean> mediaBeans=mediaDateGroupBeanList.get(section).getMediaBeans();
-//                    int cnt=mediaBeans.size();
-//                    for(int i=0;i<cnt;i++){
-//                        Log.d(TAG,"onSelectAllCheckedChanged2");
-//                        mediaBeans.get(i).setChecked(isSelectAll);
-//                    }
-//                    Log.d(TAG,"onSelectAllCheckedChanged3");
-//                    notifyDataSetChanged();
 
                     Log.d(TAG,"HeaderViewHolder:onClick3");
                     tvSelect.setSelectAll(!tvSelect.isSelectAll());
@@ -167,20 +187,21 @@ public class DateGroupMediaAdapter extends GroupRecyclerViewAdapter<DateGroupMed
             tvSelect.setText(text);
         }
 
-        public void setOnSelectDeselectAlClickedListener(OnSelectDeselectAlClickedListener listener){
-            mOnSelectDeselectAlClickedListener=listener;
+        public void setOnSelectDeselectAlClickedListener(OnSelectDeselectAllClickedListener listener){
+            mOnSelectDeselectAllClickedListener =listener;
         }
     }
 
     class MediaDateGroupViewHolder extends RecyclerView.ViewHolder {
 
-        CheckedImageView ivMedia;
-        int section;
-        int position;
+        CheckableMediaView ivMedia;
+        MediaBean bean;
+//        int section;
+//        int position;
 
-        public MediaDateGroupViewHolder(View itemView) {
+        public MediaDateGroupViewHolder(final View itemView) {
             super(itemView);
-            ivMedia=itemView.findViewById(R.id.civ_media);
+            ivMedia=itemView.findViewById(R.id.cmv_media);
         }
     }
 }

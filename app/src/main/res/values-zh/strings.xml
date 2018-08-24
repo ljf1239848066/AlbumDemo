@@ -4,4 +4,10 @@
     <string name="album_name_all_dir">所有文件夹</string>
     <string name="select_all">全选</string>
     <string name="deselect_all">取消全选</string>
+    <string name="upload">上传</string>
+    <string name="title_who_can_see">谁能看见?</string>
+    <string name="visiable_all_enable">家人 &#038; 粉丝</string>
+    <string name="visiable_family_enable">家人可见</string>
+    <string name="visiable_me_enable">近自己可见</string>
+    <string name="visiable_parents_enable">仅父母可见</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.lxzh123.albumdemo.util;
+package com.lxzh123.albumdemo.dao;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -21,40 +21,51 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * description 相册工具类，用于读取系统相册信息
+ * description 媒体工具类，用于读取系统相册信息
  * author      Created by lxzh
  * date        2018/8/22
  */
-public class MediaUtil{
-    private final static String TAG="MediaUtil";
+public class MediaDao {
+    private final static String TAG="MediaDao";
     private Context context;
     private Handler handler;
     private int msgWhat;
-    private LoadMediaThread loadMediaThread;
+    private LoadMediaThread loadThread;
 
-    public MediaUtil(Context context){
+    public MediaDao(Context context){
         this.context=context;
     }
 
-    public void asyncLoadMedia(Handler handler, int msgWhat, String selectPath){
-        this.handler=handler;
-        this.msgWhat=msgWhat;
-        loadMediaThread =new LoadMediaThread(selectPath);
-        loadMediaThread.start();
+    public boolean asyncLoadMedia(Handler handler, int msgWhat, String selectPath){
+        if(loadThread!=null&&loadThread.isAlive()){
+            Log.d(TAG,"asyncLoadMedia:isAlive");
+            return false;
+        }else{
+            Log.d(TAG,"asyncLoadMedia:startLoading");
+            this.handler = handler;
+            this.msgWhat = msgWhat;
+            loadThread = new LoadMediaThread(selectPath);
+            loadThread.start();
+            return true;
+        }
     }
 
-    public void stopLoadMedia(){
-        try{
-            if(loadMediaThread !=null&& loadMediaThread.isAlive()){
-                loadMediaThread.interrupt();
+    public boolean isWorking(){
+        return loadThread!=null&&loadThread.isAlive();
+    }
+
+    public void stopLoading() {
+        try {
+            if (loadThread != null && loadThread.isAlive()) {
+                loadThread.interrupt();
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
     public List<MediaDateGroupBean> getMediaDateGroupBeanList(){
-        return loadMediaThread.getMediaDateGroupBeanList();
+        return loadThread.getMediaDateGroupBeanList();
     }
 
     class LoadMediaThread extends Thread{
@@ -73,15 +84,16 @@ public class MediaUtil{
 
         private void getImages(List<MediaBean> mediaBeanAll){
             // id,缩略图,原图,时间
-            // (最近修改时间 DATE_MODIFIED
+            // (最近修改时间              DATE_MODIFIED  单位:ms
             // or
-            // 加入ContentResolver时间 DATE_ADDED
+            // 加入ContentResolver时间   DATE_ADDED     单位:s
             // or
-            // 文件时间 DATE_TAKEN)
+            // 文件时间                  DATE_TAKEN     单位:ms)
 //            String[] columns = {MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA,
 //                    MediaStore.Images.Thumbnails.DATA, MediaStore.Images.Media.DATE_MODIFIED};
             String[] columns = {MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA,
-                    MediaStore.Images.Thumbnails.DATA, MediaStore.Images.Media.DATE_TAKEN};
+                    MediaStore.Images.Thumbnails.DATA, MediaStore.Images.Media.DATE_TAKEN,
+                    MediaStore.Images.Media.ORIENTATION};//ORIENTATION 占位使用，匹配视频的时长
             String where= MediaStore.Images.ImageColumns.DATA+" like '"+this.selectPath+"/%'";
 
             String sortOrder = MediaStore.Images.Media.DATE_TAKEN;
@@ -95,9 +107,10 @@ public class MediaUtil{
             }
         }
 
-        private void getVedios(List<MediaBean> mediaBeanAll){
+        private void getVideos(List<MediaBean> mediaBeanAll){
             String[] columns = {MediaStore.Video.Media._ID, MediaStore.Video.Media.DATA,
-                    MediaStore.Video.Thumbnails.DATA, MediaStore.Video.Media.DATE_TAKEN};
+                    MediaStore.Video.Thumbnails.DATA, MediaStore.Video.Media.DATE_TAKEN,
+                    MediaStore.Video.Media.DURATION};
             String where= MediaStore.Video.VideoColumns.DATA+" like '"+this.selectPath+"/%'";
 
             String sortOrder = MediaStore.Video.Media.DATE_TAKEN;
@@ -122,18 +135,23 @@ public class MediaUtil{
          */
         public List<MediaBean> getContentProvider(Uri uri,String[] columns,String where, String orderBy,MediaType mediaType) {
             List<MediaBean> mediaBeans = new ArrayList<MediaBean>();
+            Log.d(TAG,"getContentProvider:where="+where);
+            Log.d(TAG,"getContentProvider:orderBy="+orderBy);
+            Log.d(TAG,"getContentProvider:mediaType="+mediaType);
             Cursor cursor = contentResolver.query(uri, columns, where,null, orderBy);
             if (null != cursor) {
                 int colId = cursor.getColumnIndex(columns[0]);
                 int colPath = cursor.getColumnIndex(columns[1]);
                 int colThumb = cursor.getColumnIndex(columns[2]);
                 int colTime = cursor.getColumnIndex(columns[3]);
+                int colDura=cursor.getColumnIndex(columns[4]);
                 while (cursor.moveToNext()) {
                     MediaBean media = new MediaBean();
                     media.setId(cursor.getInt(colId));
                     media.setPath(cursor.getString(colPath));
                     media.setThumbPath(cursor.getString(colThumb));
                     media.setTime(cursor.getLong(colTime));
+                    media.setDuration(cursor.getInt(colDura));
                     media.setMediaType(mediaType);
                     mediaBeans.add(media);
                 }
@@ -148,7 +166,7 @@ public class MediaUtil{
             contentResolver=context.getContentResolver();
             List<MediaBean> mediaBeanList=new ArrayList<>();
             getImages(mediaBeanList);
-            getVedios(mediaBeanList);
+            getVideos(mediaBeanList);
             Message msg=Message.obtain();
             msg.what=msgWhat;
             Log.d(TAG,"LoadMediaThread:run:2");
@@ -191,5 +209,37 @@ public class MediaUtil{
         Collections.sort(mediaDateGroupBeans);
         Log.d(TAG,"getDateSortedMediaList:size3="+mediaDateGroupBeans.size());
         return mediaDateGroupBeans;
+    }
+
+    public static List<MediaBean> getCheckedItem(List<MediaDateGroupBean> mediaDateGroupBeans){
+        List<MediaBean> checkedBeans=new ArrayList<>();
+        int cnt=mediaDateGroupBeans.size();
+        for(int i=0;i<cnt;i++){
+            MediaDateGroupBean groupBean=mediaDateGroupBeans.get(i);
+            List<MediaBean> subList=groupBean.getMediaBeans();
+            int cnt1=subList.size();
+            for(int j=0;j<cnt1;j++){
+                if(subList.get(j).isChecked()){
+                    checkedBeans.add(subList.get(j));
+                }
+            }
+        }
+        return checkedBeans;
+    }
+
+    public static boolean hasCheckedItem(List<MediaDateGroupBean> mediaDateGroupBeans){
+        List<MediaBean> checkedBeans=new ArrayList<>();
+        int cnt=mediaDateGroupBeans.size();
+        for(int i=0;i<cnt;i++){
+            MediaDateGroupBean groupBean=mediaDateGroupBeans.get(i);
+            List<MediaBean> subList=groupBean.getMediaBeans();
+            int cnt1=subList.size();
+            for(int j=0;j<cnt1;j++){
+                if(subList.get(j).isChecked()){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

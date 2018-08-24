@@ -15,28 +15,55 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" >
+            app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <include layout="@layout/layout_album_toolbar"/>
+            <include layout="@layout/layout_album_toolbar" />
 
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <RelativeLayout
+        android:id="@+id/rl_bottom_tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingLeft="10dp">
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/sp_who_can_see"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:spinnerMode="dropdown" />
+
+        <Button
+            android:id="@+id/btn_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dp"
+            android:text="@string/upload"
+            android:enabled="false"
+            android:background="@drawable/btn_upload_bg_disable"/>
+    </RelativeLayout>
+
+    <com.lxzh123.albumdemo.view.CheckableRecyclerView
         android:id="@+id/rv_album_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@id/rl_bottom_tools"
         android:layout_below="@id/appbar_layout"
-        android:layout_alignParentBottom="true"
         android:cacheColorHint="#00000000"
         android:drawSelectorOnTop="false"
-        android:headerDividersEnabled="false"
         android:fadingEdge="none"
         android:focusable="false"
         android:focusableInTouchMode="true"
+        android:headerDividersEnabled="false"
         android:scrollbars="vertical">
 
-    </android.support.v7.widget.RecyclerView>
+    </com.lxzh123.albumdemo.view.CheckableRecyclerView>
 
 </RelativeLayout>

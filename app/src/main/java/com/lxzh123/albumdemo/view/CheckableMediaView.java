@@ -7,10 +7,12 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.lxzh123.albumdemo.R;
 import com.lxzh123.albumdemo.common.Constant;
@@ -18,21 +20,28 @@ import com.lxzh123.albumdemo.model.MediaBean;
 import com.lxzh123.albumdemo.view.AlbumGridView.IGridImageLoader;
 
 /**
- * description $desc$
+ * description 支持选中状态变化的媒体文件展示视图
  * author      Created by lxzh
  * date        2018/8/23
  */
-public class CheckedImageView extends FrameLayout{
+public class CheckableMediaView extends FrameLayout{
+    private final String TAG="CheckableMediaView";
     private ImageView ivThumb;
     private CheckBox cbChecked;
+    private ImageView ivFlag;
+    private TextView tvTime;
     //interface of imageloader
     private IGridImageLoader mImageLoader;
     private MediaBean mediaBean;
     private boolean mAttached;
-    private static int ViewWidth=-1;
+    private OnCheckedChangedListener mOnCheckedChangedListener;
 
-    public ImageView getIvThumb() {
+    public ImageView getImageView() {
         return ivThumb;
+    }
+
+    public CheckBox getCheckBox() {
+        return cbChecked;
     }
 
     public void setMediaBean(MediaBean mediaBean) {
@@ -47,25 +56,35 @@ public class CheckedImageView extends FrameLayout{
         this.mImageLoader = mageLoader;
     }
 
-    public CheckedImageView(@NonNull Context context) {
+    public CheckableMediaView(@NonNull Context context) {
         super(context);
     }
 
-    public CheckedImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public CheckableMediaView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        LayoutInflater.from(context).inflate(R.layout.layout_media_item,this);
+        LayoutInflater.from(context).inflate(R.layout.layout_checked_media_view,this);
         initView();
     }
 
     private void initView(){
         ivThumb=findViewById(R.id.iv_thumb);
         cbChecked=findViewById(R.id.cb_checked);
+        ivFlag=findViewById(R.id.iv_flag);
+        tvTime=findViewById(R.id.tv_video_time);
         cbChecked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG,"cbChecked.onCheckedChanged");
                 setChecked(isChecked);
+                if(mOnCheckedChangedListener!=null){
+                    mOnCheckedChangedListener.OnCheckedChanged(cbChecked);
+                }
             }
         });
+    }
+
+    public void setOnCheckedChangedListener(OnCheckedChangedListener listener){
+        mOnCheckedChangedListener=listener;
     }
 
     @Override
@@ -83,9 +102,28 @@ public class CheckedImageView extends FrameLayout{
     }
 
     public void setChecked(boolean checked){
+        mediaBean.setChecked(checked);
         cbChecked.setChecked(checked);
         ivThumb.setAlpha(checked?150:255);
-        mediaBean.setChecked(checked);
+    }
+
+    /**
+     * 设置视频时间
+     * @param text 视频时间字符串
+     */
+    public void setTime(String text){
+        ivFlag.setVisibility(VISIBLE);
+        tvTime.setVisibility(VISIBLE);
+        tvTime.setText(text);
+    }
+
+    /**
+     * 隐藏视频标记与时间
+     */
+    public void hideVideoTime(){
+        ivFlag.setVisibility(GONE);
+        tvTime.setVisibility(GONE);
+        tvTime.setText("");
     }
 
     @Override
@@ -107,11 +145,10 @@ public class CheckedImageView extends FrameLayout{
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-//        loadImage(mediaBean.getPath());
     }
 
-    public void setOnCheckedChangeListener(@Nullable CompoundButton.OnCheckedChangeListener listener){
-        cbChecked.setOnCheckedChangeListener(listener);
+    interface OnCheckedChangedListener{
+        public void OnCheckedChanged(View view);
     }
 
     public void loadImage(String path){
@@ -127,11 +164,11 @@ public class CheckedImageView extends FrameLayout{
 
     private class AttachImageRunnable implements Runnable{
 
-        private CheckedImageView imageContainer;
+        private CheckableMediaView imageContainer;
         private MediaBean mediaBean;
         private Context context;
 
-        public AttachImageRunnable(CheckedImageView imageContainer, MediaBean mediaBean,Context context) {
+        public AttachImageRunnable(CheckableMediaView imageContainer, MediaBean mediaBean, Context context) {
             this.imageContainer = imageContainer;
             this.mediaBean = mediaBean;
             this.context = context;
@@ -141,7 +178,7 @@ public class CheckedImageView extends FrameLayout{
         public void run() {
             if (mImageLoader != null) {
                 mImageLoader.displayGridImage(getContext(), mediaBean.getThumbPath(),
-                        imageContainer.getIvThumb(), Constant.IMG_THUMBNAIL_SCALRE);
+                        imageContainer.getImageView(), Constant.IMG_THUMBNAIL_SCALRE);
 
             } else {
                 Log.w("NineGridView", "Can not display the image of NineGridView, you'd better set a imageloader!!!!");

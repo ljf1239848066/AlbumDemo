@@ -1,10 +1,17 @@
 <resources>
 
+    <style name="XSpinnerStyle" parent="android:Widget.ListView.DropDown">
+        <!-- 分隔线颜色 -->
+        <item name="android:divider">#DFDFDF</item>
+        <item name="android:dividerHeight">1dp</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:textColorPrimary">@color/colorPrimary</item>
         <item name="colorPrimary">@android:color/white</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:dropDownListViewStyle">@style/XSpinnerStyle</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
@@ -32,5 +39,8 @@
     <declare-styleable name="SpinnerTextView">
         <attr name="IsDropDown" format="boolean"/>
     </declare-styleable>
+    <style name="SpinnerArrayStyle" parent="Base.Widget.AppCompat.Spinner">
+        <item name="android:background">@drawable/spinner_array_selector</item>
+    </style>
 
 </resources>

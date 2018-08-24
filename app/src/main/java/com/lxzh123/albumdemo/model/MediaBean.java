@@ -2,10 +2,10 @@ package com.lxzh123.albumdemo.model;
 
 import android.support.annotation.NonNull;
 
-import com.lxzh123.albumdemo.common.Constant;
+import com.lxzh123.albumdemo.util.DateUtils;
 
 /**
- * description $desc$
+ * description 媒体文件数据结构
  * author      Created by lxzh
  * date        2018/8/23
  */
@@ -16,6 +16,11 @@ public class MediaBean implements Comparable{
     private long time;
     private String timeStr;
     private MediaType mediaType;
+    /**
+     * 音视频资源时长
+     */
+    private int duration;
+    private String durationStr;
     private boolean isChecked;
 
     public int getId() {
@@ -48,9 +53,7 @@ public class MediaBean implements Comparable{
 
     public void setTime(long time) {
         this.time = time;
-//        Date date=new Date();
-//        date.setTime(this.time);
-        this.timeStr= Constant.SIMPLE_DATE_FORMAT.format(this.time);
+        this.timeStr=DateUtils.converToString(time);
     }
 
     public String getTimeStr() {
@@ -63,6 +66,19 @@ public class MediaBean implements Comparable{
 
     public void setMediaType(MediaType mediaType) {
         this.mediaType = mediaType;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+        this.durationStr= DateUtils.covertDurationToString(duration);
+    }
+
+    public String getDurationStr() {
+        return durationStr;
     }
 
     public boolean isChecked() {
