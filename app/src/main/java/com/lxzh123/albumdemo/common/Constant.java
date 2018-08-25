@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
  * date        2018/8/22
  */
 public class Constant {
+    public static final int TAG_PERMISSION_READ_EXTERNAL_STORAGE = 1;
     /**
      * 相册图片显示列数
      */
