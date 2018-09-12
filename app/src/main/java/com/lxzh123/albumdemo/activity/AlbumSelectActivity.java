@@ -219,6 +219,7 @@ public class AlbumSelectActivity extends AppCompatActivity implements OnMediaChe
         }
         VisiableAdapter visiableAdapter = new VisiableAdapter(data);
         spWhoCanSee.setAdapter(visiableAdapter);
+        spWhoCanSee.setDropDownWidth(ViewUtil.getDisplayWidth(this)/3);
     }
 
     @Override

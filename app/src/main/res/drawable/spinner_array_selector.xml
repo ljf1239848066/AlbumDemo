@@ -1,29 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--<selector xmlns:android="http://schemas.android.com/apk/res/android">-->
+
+<!--<item android:state_window_focused="true">--><!--<layer-list>--><!--<item>--><!--<bitmap android:gravity="bottom|right" android:src="@drawable/spinner_array_light" />--><!--</item>--><!--</layer-list>--><!--</item>-->
+
+<!--<item>--><!--<layer-list>--><!--<item>--><!--<bitmap android:gravity="bottom|right" android:src="@drawable/spinner_array_dark" />--><!--</item>--><!--</layer-list>--><!--</item>--><!--</selector>-->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:state_window_focused="true">
-        <layer-list>
-            <item>
-                <shape>
-                    <padding android:right="10dp"/>
-                </shape>
-            </item>
-            <item>
-                <bitmap android:gravity="center_vertical|right" android:src="@drawable/spinner_array_light" />
-            </item>
-        </layer-list>
-    </item>
-
-    <item>
-        <layer-list>
-            <item>
-                <shape>
-                    <padding android:right="10dp"/>
-                </shape>
-            </item>
-            <item>
-                <bitmap android:gravity="center_vertical|right" android:src="@drawable/spinner_array_light" />
-            </item>
-        </layer-list>
-    </item>
+    <item android:drawable="@drawable/spinner_array_dark" android:state_pressed="true" /><!--按下时效果-->
+    <item android:drawable="@drawable/spinner_array_light" android:state_pressed="false" /><!--默认效果-->
 </selector>
